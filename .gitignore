@@ -1,0 +1,5 @@
+.idea/*
+Script Python/.idea/*
+Script Python/venv/*
+*.pyc
+.vscode/settings.json
