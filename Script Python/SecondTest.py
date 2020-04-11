@@ -31,7 +31,6 @@ def get_number():
 
 def call_number(serial):
     """ Method that retrieves all the processes to make the call """
-    number = get_number()  # get number to call
 
     # Wake up our cellphone
     check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_WAKEUP'])
@@ -53,17 +52,8 @@ def call_number(serial):
     ).click()
     time.sleep(0.01)
 
-    # Enter (+) character
-    d(text='0', packageName='com.android.contacts').long_click()
-    time.sleep(0.01)
-
-    # Enter 5 number
-    d(text='5', packageName='com.android.contacts').click()
-    time.sleep(0.01)
-
-    # Enter 2 number
-    d(text='2', packageName='com.android.contacts').click()
-    time.sleep(0.01)
+    # Get number to call
+    number = get_number()
 
     # Iterate and put down every digit of the number to call
     for n in number:

@@ -25,13 +25,15 @@ def read_serial():
 
 def change_wifi_status(serial):
     """ Method that retrieves all the processes to change our wifi status """
+
+    # Wake up our cellphone
     check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_WAKEUP'])
 
-    # Home
+    # Go to home page
     check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_HOME'])
     time.sleep(0.01)
 
-    # Initial Menu
+    # Start initial menu
     d(text='Apps', packageName='com.huawei.android.launcher').click()
     time.sleep(0.01)
 
