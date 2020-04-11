@@ -3,7 +3,8 @@
 """
 by Erick Gtz
 04/09/2020
-Fourth Script: release 1.4
+Fourth Script: release 1.3
+Script version: 1.1 (04/11/20)
 """
 from subprocess import check_call, check_output
 import time
@@ -15,7 +16,10 @@ import pytz
 # ---------------------------------------------------------
 
 def read_serial():
-    """ Method that reads the serial of the first android device detected by adb """
+    """
+    Method that reads the serial of the first android device detected by adb
+    :return: serial of detected device
+    """
     output = check_output(['adb', 'devices'])  # check the adb list of available devices
     lines = output.splitlines()
     first_dev = lines[1].split()[0]  # just use the first available device
@@ -23,9 +27,11 @@ def read_serial():
     return first_dev
 
 
-def change_wifi_status(serial):
-    """ Method that retrieves all the processes to change our wifi status """
-
+def open_settings(serial):
+    """
+    Method that retrieves all the processes to open settings menu
+    :return: when the function is completed
+    """
     # Wake up our cellphone
     check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_WAKEUP'])
 
@@ -46,6 +52,14 @@ def change_wifi_status(serial):
     ).click()
     time.sleep(0.01)
 
+    return
+
+
+def change_wifi_status(serial):
+    """
+    Method that retrieves all the processes to change our wifi status
+    :return: when the function is completed
+    """
     # Click on search bar and set in this text "wireless"
     d(text='Search').set_text("wireless")
     time.sleep(0.01)
@@ -70,7 +84,9 @@ def change_wifi_status(serial):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    """Where our code runs"""
+    """
+    Where we manage who runs
+    """
     try:
         first_serial = read_serial()  # get number serial of our cellphone, it has to be the first in our ~ adb devices
     except Exception as ex:  # Exception when there are no available adb devices
@@ -85,6 +101,7 @@ if __name__ == "__main__":
     try:
         d = Device(first_serial)
         print("Script Change Wi-Fi Status - Mode: On---------")
+        open_settings(first_serial)
         change_wifi_status(first_serial)
         time.sleep(2)
     except Exception as ex:

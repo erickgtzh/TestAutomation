@@ -4,7 +4,9 @@
 by Erick Gtz
 04/09/2020
 First Script: release 1.1
+Script version: 1.1 (04/11/20)
 """
+import re
 from subprocess import check_output
 import time
 import datetime
@@ -14,7 +16,10 @@ import pytz
 # ---------------------------------------------------------
 
 def read_serial():
-    """ Method that reads the serial of the first android device detected by adb """
+    """
+    Method that reads the serial of the first android device detected by adb
+    :return: serial of detected device
+    """
     output = check_output(['adb', 'devices'])  # check the adb list of available devices
     lines = output.splitlines()
     first_dev = lines[1].split()[0]  # just use the first available device
@@ -22,28 +27,43 @@ def read_serial():
     return first_dev
 
 
-def get_command(number):
-    """ Method that returns the adb command used to call cellphone and to the concatenation with the number to call """
-    return check_output(['adb', 'shell', 'am', 'start', '-a', 'android.intent.action.CALL', '-d', 'tel:' + number])
-
-
 def get_number():
-    """ Method that retrieves the user input of the number to call """
-    print("Please, enter number to call:")
-    return input()
+    """
+    Method that retrieves the user input of the number to call
+    :return: a string variable of the number to call
+    """
+    return raw_input("Please, enter a number to call: ")
+
+
+def validate_number(number):
+    """
+    Method that validate the length and regex of the number (only: digits and characters)
+    :return: validation of the number entered
+    """
+    rule = re.match(r'^([\s\d\+\*\+\#]+)$', number)
+    if 15 > len(number) > 2 and rule:
+        return True
+    print "Please, enter a valid number, try again..."
+    call_number()
 
 
 def call_number():
-    """ Method that retrieves the methods that allow us to do the call and run them in the correct order to make the
-    call """
-    number = str(get_number())
-    get_command(number)
+    """
+    Method that retrieves the methods that allow us to do the call and run them in the correct order to make the call
+    and append the number to commit the adb command
+    """
+    # Ask number to call
+    number = get_number()
+    if validate_number(number):
+        check_output(['adb', 'shell', 'am', 'start', '-a', 'android.intent.action.CALL', '-d', 'tel:' + number])
 
 
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    """Where our code runs"""
+    """
+    Where we manage who runs
+    """
     try:
         first_serial = read_serial()  # get number serial of our cellphone, it has to be the first in our ~ adb devices
     except Exception as ex:  # Exception when there are no available adb devices

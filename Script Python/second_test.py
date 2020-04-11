@@ -5,17 +5,21 @@ by Erick Gtz
 04/09/2020
 Second Script: release 1.2
 """
+import re
 from subprocess import check_call, check_output
 import time
 import datetime
 from uiautomator import Device
 import pytz
+import copy
 
 
 # ---------------------------------------------------------
 
 def read_serial():
-    """ Method that reads the serial of the first android device detected by adb """
+    """
+    Method that reads the serial of the first android device detected by adb
+    """
     output = check_output(['adb', 'devices'])  # check the adb list of available devices
     lines = output.splitlines()
     first_dev = lines[1].split()[0]  # just use the first available device
@@ -23,14 +27,33 @@ def read_serial():
     return first_dev
 
 
-def get_number():
-    """ Method that retrieves and return the user input of the number to call """
-    print("Please, enter number to call:")
-    return str(input())
+def get_number(serial):
+    """
+    Method that retrieves the user input of the number to call
+    :return: a string variable of the number to call
+    """
+    number = raw_input("Please, enter number to call: ")
+    if validate_number(number, serial):
+        return number
 
 
-def call_number(serial):
-    """ Method that retrieves all the processes to make the call """
+def validate_number(number, serial):
+    """
+    Method that validate the length and regex of the number (only: digits and characters)
+    :return: validation of the number entered
+    """
+    rule = re.match(r'^([\s\d\+\*\+\#]+)$', number)
+    if 15 > len(number) > 2 and rule:
+        return True
+    print "Please, enter a valid number, try again..."
+    call_number(serial)
+
+
+def open_phone_menu(serial):
+    """
+    Method that retrieves all the processes to open menu
+    :return: when the process ends
+    """
 
     # Wake up our cellphone
     check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_WAKEUP'])
@@ -52,15 +75,24 @@ def call_number(serial):
     ).click()
     time.sleep(0.01)
 
-    # Get number to call
-    number = get_number()
+    return
+
+
+def call_number(serial):
+    """
+    Method that retrieves all the processes to ask a number and call it
+    :return: when the process ends
+    """
+
+    # Ask number to call
+    number = get_number(serial)
 
     # Iterate and put down every digit of the number to call
     for n in number:
         d(text=n).set_text(n)
         time.sleep(0.01)
 
-    # Search and click in phone icon
+    # Search and click in phone icon to call
     d(className="android.widget.LinearLayout",
       resourceId="com.android.contacts:id/dialpadAdditionalButtonsWithIpCall") \
         .child_by_text(
@@ -79,7 +111,9 @@ def call_number(serial):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    """Where our code runs"""
+    """
+    Where we manage who runs
+    """
     try:
         first_serial = read_serial()  # get number serial of our cellphone, it has to be the first in our ~ adb devices
     except Exception as ex:  # Exception when there are no available adb devices
@@ -94,8 +128,9 @@ if __name__ == "__main__":
     try:
         d = Device(first_serial)
         print("Script Call by UiAutomator - Mode: On---------")
+        open_phone_menu(first_serial)
         call_number(first_serial)
-        time.sleep(2)
+        time.sleep(0.01)
     except Exception as ex:
         print(ex)
     finally:
