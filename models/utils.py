@@ -19,6 +19,10 @@ def read_serial(position=1):
 
 
 def get_serial_and_device(serial=read_serial()):
+    """
+    Method that get and return the serial and device
+    :return: serial and device
+    """
     return [serial, Device(serial)]
 
 
@@ -107,7 +111,7 @@ def call_number():
     clear_phone_display(d)
 
     # Iterate and put down every digit of the number to call
-    for i in str(get_number()):
+    for i in get_number():
         d(text=i).set_text(i)
         wait()
 
