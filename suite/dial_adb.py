@@ -3,7 +3,7 @@ import time
 import datetime
 import pytz
 
-from models.utils import call_adb_number, wait, read_serial
+from models.utils import dial_adb_number, wait, read_serial
 
 """
 by Erick Gtz
@@ -26,7 +26,7 @@ def suite_methods():
     """
     suite methods that we're going to run
     """
-    call_adb_number()
+    dial_adb_number()
     wait()
 
 

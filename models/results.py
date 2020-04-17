@@ -1,9 +1,9 @@
 import datetime
 import pytz
 from models.utils import read_serial, wait
-from suite import call_adb, call_adb_uia, change_wifi_status_uia
+from suite import dial_adb, dial_adb_uia, change_wifi_status
 
-script_manager = [call_adb, call_adb_uia, change_wifi_status_uia, change_wifi_status_uia]
+script_manager = [change_wifi_status]
 
 
 def suite_execution():
@@ -12,10 +12,11 @@ def suite_execution():
             serial = suite.read_serial()
         except Exception as ex:
             print('Error: ' + ex)
+            pass
 
         start_ts_pst = suite.get_time()
         print 'test start:  {}'.format(start_ts_pst)
-        print 'serial: %s:  {}'.format(serial)
+        print 'serial    :  {}'.format(serial)
 
         try:
             print suite.suite_info()
@@ -24,6 +25,7 @@ def suite_execution():
 
         except Exception as ex:
             print(ex)
+            pass
         finally:
             stop_ts_pst = suite.get_time()
 

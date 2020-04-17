@@ -1,19 +1,20 @@
 import time
 import datetime
 import pytz
-from models.utils import call_adb_number, wait, read_serial, open_app, change_wifi_status
+from models.utils import dial_adb_number, wait, read_serial, dial_number, open_app
 
 """
 by Erick Gtz
 04/15/2020
-1.3 & 1.4 script
+1.2 script
 
 script version: 1.1 (04/11/20)
 script version: 1.2 (04/15/20)
 """
 
+
 def suite_info():
-    name = 'change wifi status'
+    name = 'dial by adb and ui automator'
     version = '1.2 (04/15/20)'
     info = 'script: {0} \nversion: {1}'.format(name, version)
     return info
@@ -23,8 +24,8 @@ def suite_methods():
     """
     suite methods that we're going to run
     """
-    open_app('Settings')
-    change_wifi_status()
+    open_app('Phone')
+    dial_number()
     wait()
 
 

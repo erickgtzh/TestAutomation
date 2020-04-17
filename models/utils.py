@@ -64,16 +64,16 @@ def validate_number(number):
     if 15 > len(number) > 2 and rule:
         return True
     print "Please, enter a valid number, try again..."
-    call_number()
+    dial_number()
 
 
-def call_adb_number():
+def dial_adb_number():
     """
     Method that retrieves the methods that allow us to do the call and run them in the correct order to make the call
     and append the number to commit the adb command
     """
     serial, d = get_serial_and_device()
-    # Ask number to call
+    # Ask dial number
     number = get_number()
     if validate_number(number):
         check_output(['adb', 'shell', 'am', 'start', '-a', 'android.intent.action.CALL', '-d', 'tel:' + number])
@@ -82,11 +82,11 @@ def call_adb_number():
 
 def get_number():
     """
-    Method that retrieves the user input of the number to call
-    :return: a string variable of the number to call
+    Method that retrieves the user input of the number to dial
+    :return: a string variable of the dial number
     """
     serial, d = get_serial_and_device()
-    number = raw_input("Please, enter number to call: ")
+    number = raw_input("Please, enter number to dial: ")
     if validate_number(number):
         print 'calling: {}'.format(number)
         return number
@@ -101,7 +101,7 @@ def clear_phone_display(d):
         .long_click()
 
 
-def call_number():
+def dial_number():
     """
     Method that retrieves all the processes to ask a number and call it
     :return: when the process ends
@@ -115,7 +115,7 @@ def call_number():
         d(text=i).set_text(i)
         wait()
 
-    # Search and click in phone icon to call
+    # Search and click in phone icon to dial
     d(className="android.widget.LinearLayout",
       resourceId="com.android.contacts:id/dialpadAdditionalButtonsWithIpCall") \
         .child_by_text(
@@ -127,22 +127,28 @@ def call_number():
     return
 
 
-def change_wifi_status():
+def toggle_wifi_status(set_to, search_bar='wireless', wifi_menu_value='Wi-Fi'):
     """
-    Method that retrieves all the processes to change our wifi status
+    Method that retrieves all the processes to toggle our wifi status
     :return: when the function is completed
     """
     serial, d = get_serial_and_device()
+
+    if get_wifi_status(set_to):
+        d.press.back()
+        d.press.home()
+        return
+
     # Click on search bar and set in this text "wireless"
-    d(text='Search').set_text("wireless")
+    d(text='Search').set_text(search_bar)
     wait()
 
-    # Get to the first value that we found that contains Wi-Fi
-    d(text='Wi-Fi', className='android.widget.TextView') \
+    # Get to the first value that we found that contains the word: "Wi-Fi"
+    d(text=wifi_menu_value, className='android.widget.TextView') \
         .click()
     wait()
 
-    # Change the status of our wifi just toggling
+    # Toggle the status of our wifi
     d(text='', className='android.widget.Switch') \
         .click()
     wait()
@@ -152,6 +158,15 @@ def change_wifi_status():
     d.press.back()
     d.press.home()
     return
+
+
+def get_wifi_status(set_to):
+    wifi_status = int(check_output(['adb', 'shell', 'settings', 'get', 'global', 'wifi_on']))
+    if set_to == wifi_status:
+        print "wifi already set to the desired state"
+        return True
+    print "changing wifi status"
+    return False
 
 
 def wait(sleep_time=0.01):
