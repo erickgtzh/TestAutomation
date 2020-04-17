@@ -1,9 +1,9 @@
 import datetime
 import pytz
 from models.utils import read_serial, wait
-from suite import dial_adb, dial_adb_uia, change_wifi_status
+from suite import call_adb, call_uia, manage_wifi_status
 
-script_manager = [change_wifi_status]
+script_manager = [manage_wifi_status]
 
 
 def suite_execution():
