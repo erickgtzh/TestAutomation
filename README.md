@@ -71,3 +71,25 @@ Device:	HUAWEI P20 Pro
 Build 
 number:  	9.1.0.388(C69E9R1P11)
 
+
+In this release you can find the suite for testing the following scripts:
+
+get device connected by using adb shell
+adb call for local numbers
+adb call for national numbers
+adb call for international numbers
+adb call for emergency numbers
+adb and uiautomator call for local numbers
+adb and uiautomator call for national numbers
+adb and uiautomator call for international numbers
+adb and uiautomator call for emergency numbers
+detect wifi status 
+change wifi status or not, depending on input
+
+It was tested in two ways:
+Manual and automated
+
+Manual: user inputs
+
+Automated: pytest library (for local and national calls)*
+* Library in pytest used to simulate input doesn't work with no unicode in Python 2.7, so '*' and '+' are not allowed
