@@ -7,11 +7,12 @@ from models.utils import call_adb_number, wait, read_serial, wait_process_comple
 
 """
 by Erick Gtz
-04/09/2020
+04/15/2020
 1.1 script
 
 script version: 1.1 (04/11/20)
 script version: 1.2 (04/15/20)
+script version: 1.3 (04/17/20)
 """
 
 

@@ -10,12 +10,13 @@ by Erick Gtz
 
 script version: 1.1 (04/11/20)
 script version: 1.2 (04/15/20)
+script version: 1.3 (04/17/20)
 """
 
 
 def suite_info():
     name = 'call by adb and ui automator'
-    version = '1.2 (04/15/20)'
+    version = '1.3 (04/17/20)'
     info = 'script: {0} \nversion: {1}'.format(name, version)
     return info
 
