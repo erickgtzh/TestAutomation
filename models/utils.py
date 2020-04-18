@@ -32,12 +32,10 @@ def open_app(app_name):
     :return: when the process ends
     """
     serial, d = get_serial_and_device()
-    # Wake up our cellphone
-    check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_WAKEUP'])
-
-    # Go to home page
-    check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_HOME'])
-    wait()
+    # turn on screen
+    d.screen.on()
+    # press home key
+    d.press.home()
 
     # Start initial menu
     d(text='Apps', packageName=package_name).click()
@@ -52,12 +50,12 @@ def open_app(app_name):
     ).click()
     wait()
 
-    return
+    return True
 
 
 def validate_number(number):
     """
-    Method that validate the length and regex of the number (only: digits and characters)
+    Method that validates the length and regex of the number (only: digits and characters)
     :return: validation of the number entered
     """
     rule = re.match(r'^([\s\d\+\*\+\#]+)$', number)
@@ -75,6 +73,7 @@ def call_adb_number():
     serial, d = get_serial_and_device()
     # Ask number to dial
     number = get_number()
+
     if validate_number(number):
         check_output(['adb', 'shell', 'am', 'start', '-a', 'android.intent.action.CALL', '-d', 'tel:' + number])
     d.wait.update()
@@ -85,7 +84,6 @@ def get_number():
     Method that retrieves the user input of the number to dial
     :return: a string variable of the dial number
     """
-    serial, d = get_serial_and_device()
     number = raw_input("Please, enter number to call: ")
     if validate_number(number):
         print 'calling: {}'.format(number)
@@ -164,7 +162,12 @@ def get_wifi_status(set_to):
     """
     # Wake up our cellphone
     serial, d = get_serial_and_device()
-    check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_WAKEUP'])
+    # turn on screen
+    d.screen.on()
+    # press back key
+    d.press.back()
+    # press home key
+    d.press.home()
     wifi_status = int(check_output(['adb', 'shell', 'settings', 'get', 'global', 'wifi_on']))
     if set_to == wifi_status:
         print "wifi already set to the desired state"

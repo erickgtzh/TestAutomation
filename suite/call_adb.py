@@ -16,6 +16,10 @@ script version: 1.2 (04/15/20)
 
 
 def suite_info():
+    """
+    Suite information (name and version)
+    :return: append info # script: name version: version'
+    """
     name = 'call by adb'
     version = '1.2 (04/15/20)'
     info = 'script: {0} \nversion: {1}'.format(name, version)
