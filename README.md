@@ -93,3 +93,17 @@ Manual: user inputs
 
 Automated: pytest library (for local and national calls)*
 * Library in pytest used to simulate input doesn't work with no unicode in Python 2.7, so '*' and '+' are not allowed
+
+Versions for the scripts:
+
+    name = 'call by adb'
+    version = '1.3 (04/17/20)'
+    info = 'script: {0} \nversion: {1}'.format(name, version)
+
+    name = 'call by adb and ui automator'
+    version = '1.3 (04/17/20)'
+    info = 'script: {0} \nversion: {1}'.format(name, version)
+    
+    name = 'toggle wifi status'
+    version = '1.3 (04/17/20)'
+    info = 'script: {0} \nversion: {1}'.format(name, version)
