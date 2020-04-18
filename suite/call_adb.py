@@ -3,7 +3,7 @@ import time
 import datetime
 import pytz
 
-from models.utils import call_adb_number, wait, read_serial
+from models.utils import call_adb_number, wait, read_serial, wait_process_completed
 
 """
 by Erick Gtz
@@ -16,6 +16,10 @@ script version: 1.2 (04/15/20)
 
 
 def suite_info():
+    """
+    Suite information (name and version)
+    :return: append info # script: name version: version'
+    """
     name = 'call by adb'
     version = '1.2 (04/15/20)'
     info = 'script: {0} \nversion: {1}'.format(name, version)
@@ -27,7 +31,7 @@ def suite_methods():
     suite methods that we're going to run
     """
     call_adb_number()
-    wait()
+    wait_process_completed()
 
 
 def get_time():

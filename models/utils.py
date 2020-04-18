@@ -32,12 +32,10 @@ def open_app(app_name):
     :return: when the process ends
     """
     serial, d = get_serial_and_device()
-    # Wake up our cellphone
-    check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_WAKEUP'])
-
-    # Go to home page
-    check_call(['adb', '-s', serial, 'shell', 'input keyevent', 'KEYCODE_HOME'])
-    wait()
+    # turn on screen
+    d.screen.on()
+    # press home key
+    d.press.home()
 
     # Start initial menu
     d(text='Apps', packageName=package_name).click()
@@ -52,12 +50,12 @@ def open_app(app_name):
     ).click()
     wait()
 
-    return
+    return True
 
 
 def validate_number(number):
     """
-    Method that validate the length and regex of the number (only: digits and characters)
+    Method that validates the length and regex of the number (only: digits and characters)
     :return: validation of the number entered
     """
     rule = re.match(r'^([\s\d\+\*\+\#]+)$', number)
@@ -73,8 +71,9 @@ def call_adb_number():
     and append the number to commit the adb command
     """
     serial, d = get_serial_and_device()
-    # Ask number to call
+    # Ask number to dial
     number = get_number()
+
     if validate_number(number):
         check_output(['adb', 'shell', 'am', 'start', '-a', 'android.intent.action.CALL', '-d', 'tel:' + number])
     d.wait.update()
@@ -82,10 +81,9 @@ def call_adb_number():
 
 def get_number():
     """
-    Method that retrieves the user input of the number to call
-    :return: a string variable of the number to call
+    Method that retrieves the user input of the number to dial
+    :return: a string variable of the dial number
     """
-    serial, d = get_serial_and_device()
     number = raw_input("Please, enter number to call: ")
     if validate_number(number):
         print 'calling: {}'.format(number)
@@ -93,6 +91,10 @@ def get_number():
 
 
 def clear_phone_display(d):
+    """
+    Method that help us in phone display and delete all the input numbers over there, starting with a sample number
+    to get the option to backspace
+    """
     d(text='1').set_text('1')
     wait()
     # long click backspace to delete all on display
@@ -127,32 +129,66 @@ def call_number():
     return
 
 
-def change_wifi_status():
+def toggle_wifi_status(search_bar='wireless', wifi_menu_value='Wi-Fi'):
     """
-    Method that retrieves all the processes to change our wifi status
+    Method that retrieves all the processes to toggle our wifi status
     :return: when the function is completed
     """
     serial, d = get_serial_and_device()
+
     # Click on search bar and set in this text "wireless"
-    d(text='Search').set_text("wireless")
+    d(text='Search').set_text(search_bar)
     wait()
 
-    # Get to the first value that we found that contains Wi-Fi
-    d(text='Wi-Fi', className='android.widget.TextView') \
+    # Get to the first value that we found that contains the word: "Wi-Fi"
+    d(text=wifi_menu_value, className='android.widget.TextView') \
         .click()
     wait()
 
-    # Change the status of our wifi just toggling
+    # Toggle the status of our wifi
     d(text='', className='android.widget.Switch') \
         .click()
     wait()
-
+    wait_process_completed()
     d.wait.update()
-    d.press.back()
-    d.press.back()
-    d.press.home()
     return
 
 
+def get_wifi_status(set_to):
+    """
+    Method that checks if the wifi is on or off and decides through what returns, if it changes the state or leaves it
+    as it is
+    :return: decision based on wifi status
+    """
+    # Wake up our cellphone
+    serial, d = get_serial_and_device()
+    # turn on screen
+    d.screen.on()
+    # press back key
+    d.press.back()
+    # press home key
+    d.press.home()
+    wifi_status = int(check_output(['adb', 'shell', 'settings', 'get', 'global', 'wifi_on']))
+    if set_to == wifi_status:
+        print "wifi already set to the desired state"
+        return True
+    print "changing wifi status"
+    return False
+
+
 def wait(sleep_time=0.01):
+    """
+    Method used default waiting time = "0.01"
+    """
     time.sleep(sleep_time)
+
+
+def wait_process_completed():
+    """
+    Method that wait until process is completed and go back to menu
+    """
+    wait()
+    serial, d = get_serial_and_device()
+    d.press.back()
+    d.press.back()
+    d.press.home()

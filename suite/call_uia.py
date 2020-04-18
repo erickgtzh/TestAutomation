@@ -1,7 +1,7 @@
 import time
 import datetime
 import pytz
-from models.utils import call_adb_number, wait, read_serial, call_number, open_app
+from models.utils import call_adb_number, wait, read_serial, call_number, open_app, wait_process_completed
 
 """
 by Erick Gtz
@@ -26,7 +26,7 @@ def suite_methods():
     """
     open_app('Phone')
     call_number()
-    wait()
+    wait_process_completed()
 
 
 def get_time():
